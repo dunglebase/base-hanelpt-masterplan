@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Khảo sát tình huống thực tế · Hanel PT</title>
+<style>
+:root{
+  --ink:#0F1E38;--ink-2:#263855;--muted:#6B7890;--paper:#EEF3F8;--surface:#FFFFFF;
+  --line:#D9E2EE;--teal:#0E9C8B;--teal-deep:#08766B;--teal-wash:#E5F5F2;
+  --blue:#2563EB;--blue-wash:#EAF1FF;--amber:#C77718;--amber-wash:#FFF2DF;
+  --danger:#B42318;--shadow:0 1px 2px rgba(15,30,56,.04),0 12px 36px rgba(15,30,56,.08);
+  --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.55;background-image:linear-gradient(to right,rgba(14,156,139,.045) 1px,transparent 1px),linear-gradient(to bottom,rgba(14,156,139,.04) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 78%);-webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000,transparent 78%)}
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;min-height:100dvh;padding:max(18px,env(safe-area-inset-top)) 18px max(24px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:12px;margin:2px 0 14px}.logo{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:-.01em}.logo i{display:block;width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px var(--teal-wash)}.top small{color:var(--muted);font-weight:600}.readout{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}.track{height:4px;border-radius:999px;background:var(--line);position:relative;overflow:hidden;margin-bottom:18px}.track i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--teal-deep),var(--teal));transition:width .35s cubic-bezier(.4,0,.2,1)}
+.card{background:rgba(255,255,255,.95);border:1.5px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow);animation:enter .28s ease both}@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-deep);font-weight:800;margin-bottom:13px;display:flex;align-items:center;gap:8px}.eyebrow:before{content:"";width:18px;height:2px;border-radius:99px;background:var(--teal)}
+h1{font-size:32px;line-height:1.16;letter-spacing:-.035em;margin-bottom:13px}h1 em{font-style:normal;color:var(--teal-deep)}h2{font-size:25px;line-height:1.24;letter-spacing:-.025em;margin-bottom:8px}p.lead{font-size:16px;color:var(--ink-2);max-width:62ch;margin-bottom:18px}.hint{font-size:14px;color:var(--muted);margin:6px 0 18px}.note{font-size:13px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;color:var(--ink-2);margin-bottom:7px}input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px 14px;font:inherit;color:var(--ink);background:#fff;outline:none;box-shadow:0 1px 2px rgba(15,30,56,.03)}input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(14,156,139,.13)}textarea{min-height:126px;resize:vertical}.textarea-small{min-height:84px}
+.opts{display:grid;grid-template-columns:1fr;gap:10px;margin-top:14px}.opt{position:relative;display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);padding:15px 16px;font:inherit;cursor:pointer;box-shadow:0 1px 2px rgba(15,30,56,.03);transition:.14s}.opt:hover{border-color:#B7C6D9}.opt.sel{border-color:var(--teal);background:var(--teal-wash)}.opt .box{flex:none;margin-top:1px;width:22px;height:22px;border-radius:7px;border:1.5px solid #C4D0DF;display:grid;place-items:center;background:#fff}.opt.radio .box{border-radius:50%}.opt.sel .box{background:var(--teal);border-color:var(--teal)}.opt .box:after{content:"";width:9px;height:5px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg);opacity:0;margin-top:-2px}.opt.sel .box:after{opacity:1}.opt b{display:block;font-size:15px;line-height:1.35}.opt span.txt{display:block;color:var(--muted);font-size:13px;margin-top:2px}.opt.tag{padding:13px 14px}.opt.tag b{font-size:14px}
+.situation{border:1.5px solid var(--line);border-radius:18px;background:#fff;margin:12px 0;padding:16px}.situation .head{display:flex;align-items:center;gap:9px;margin-bottom:10px}.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.06em}.pill.blue{background:var(--blue-wash);color:#174EA6}.pill.teal{background:var(--teal-wash);color:var(--teal-deep)}.pill.amber{background:var(--amber-wash);color:var(--amber)}
+.counter{display:flex;align-items:center;gap:10px;margin:13px 0 4px}.counter .bar{flex:1;height:7px;background:var(--line);border-radius:999px;overflow:hidden}.counter .bar i{display:block;height:100%;background:var(--teal);width:0;transition:.2s}.counter b{font-family:var(--mono);font-size:13px;color:var(--teal-deep)}
+.warn{border:1.5px solid rgba(199,119,24,.35);background:var(--amber-wash);border-radius:14px;padding:12px 14px;font-size:14px;color:#65410E;margin-top:12px}.okbox{border:1.5px solid rgba(14,156,139,.35);background:var(--teal-wash);border-radius:14px;padding:12px 14px;font-size:14px;color:var(--teal-deep);margin-top:12px}.summary{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:16px;margin:12px 0}.summary h3{font-size:16px;margin-bottom:8px}.summary ol{padding-left:22px}.summary li{margin:7px 0;color:var(--ink-2)}
+.nav{display:flex;gap:12px;align-items:center;margin-top:22px}.nav .spacer{flex:1}.btn{border:none;border-radius:14px;padding:14px 20px;min-height:50px;font:inherit;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:.12s;box-shadow:var(--shadow)}.btn:active{transform:scale(.985)}.btn.primary{background:var(--teal);color:#fff}.btn.primary:hover{background:var(--teal-deep)}.btn.dark{background:var(--ink);color:#fff}.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}.btn[disabled]{opacity:.45;cursor:not-allowed}.export{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.export .btn{width:100%}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;border-radius:14px;padding:12px 18px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50;box-shadow:0 12px 36px rgba(0,0,0,.22)}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:680px){.wrap{padding-left:14px;padding-right:14px}.card{padding:20px 16px;border-radius:20px}.grid,.export{grid-template-columns:1fr}h1{font-size:28px}h2{font-size:22px}.readout{display:none}.nav{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(238,243,248,0),var(--paper) 32%);padding-top:22px;margin-left:-4px;margin-right:-4px}.nav .btn{flex:1}.nav .spacer{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><i></i>HANEL PT <small>· khảo sát tình huống thực tế</small></div>
+    <div class="readout" id="readout">BƯỚC 01</div>
+  </div>
+  <div class="track"><i id="progress"></i></div>
+  <main id="app"></main>
+</div>
+<div class="toast" id="toast"></div>
+<iframe name="submit_iframe" id="submit_iframe" style="display:none"></iframe>
+<script>
+const COMPANY = 'Hanel PT';
+const SUBMIT_URL = 'https://script.google.com/macros/s/AKfycbyx-UpnpxFAqaHVZkF6YdN9KsAWhK9KnF6iz0QNkegk2FhcTOIfV0eZ2OOHNklAV7Wz/exec';
+
+const SALES_OPTIONS = [
+  ['followup','Quên hẹn / quên follow-up khách hàng','Lịch gọi lại, nhắc báo giá, chăm sóc sau gặp gỡ chưa được kiểm soát tập trung.'],
+  ['history','Lịch sử trao đổi với khách nằm rải rác','Thông tin nằm ở Zalo cá nhân, email, điện thoại, file riêng nên người khác khó nắm tiếp.'],
+  ['duplicate','Nhiều người cùng chăm một khách nhưng thiếu thống nhất','Khách phải nhắc lại thông tin hoặc nhận thông điệp không đồng nhất.'],
+  ['pipeline','Không rõ cơ hội đang ở bước nào','Khó biết deal đang mở, đang chờ báo giá, đang đàm phán hay đã nguội.'],
+  ['approval','Báo giá / hợp đồng / đề xuất bị chậm vì chờ nội bộ','Cần xác nhận giá, tồn kho, kỹ thuật, điều khoản hoặc phê duyệt nhưng không rõ đang kẹt ở đâu.'],
+  ['handover','Bàn giao từ kinh doanh sang vận hành / kỹ thuật bị thiếu thông tin','Đội sau phải hỏi lại nhiều lần, khách bị chậm xử lý.'],
+  ['complaint','Khiếu nại / sự cố sau bán không rõ ai theo tới cuối','Khách phản ánh nhưng việc xử lý bị rơi giữa nhiều bên.'],
+  ['report','Báo cáo pipeline / doanh số / tỷ lệ chuyển đổi làm thủ công','Số liệu không đủ nhanh hoặc không đủ tin cậy để quản lý.'],
+  ['customer-care','Khách cũ / đối tác / đại lý chưa được chăm sóc định kỳ','Dễ bỏ lỡ cơ hội bán lại, gia hạn hoặc mở rộng.']
+];
+const OPS_OPTIONS = [
+  ['owner','Công việc phối hợp nhiều bộ phận không rõ owner','Nhiều bên cùng liên quan nhưng không rõ ai chịu trách nhiệm cuối cùng.'],
+  ['progress','Theo dõi tiến độ bằng cách hỏi Zalo / gọi từng người','Muốn biết việc tới đâu phải đi hỏi, không có một điểm nhìn chung.'],
+  ['approval','Phê duyệt / chứng từ / hồ sơ bị kẹt','Không biết đang kẹt ở ai, kẹt vì thiếu thông tin gì.'],
+  ['input','Dữ liệu đầu vào từ bộ phận khác thiếu hoặc sai','Ví dụ: kinh doanh, kho, mua hàng, kỹ thuật, kế toán, XNK gửi thiếu thông tin.'],
+  ['urgent','Việc gấp phát sinh làm đảo kế hoạch','Có xử lý nhưng không lưu được lý do, mức độ ảnh hưởng và bài học.'],
+  ['duplicate','Nhập liệu trùng giữa Excel, Zalo, email, phần mềm','Một thông tin phải nhập hoặc tổng hợp lại nhiều lần.'],
+  ['handover','Bàn giao giữa ca / người / phòng ban thiếu thông tin','Người nhận việc phải hỏi lại, dễ sót đầu việc.'],
+  ['report','Báo cáo vận hành gom thủ công từ nhiều nguồn','Mất thời gian đối chiếu, số liệu lên trễ.'],
+  ['repeat-error','Sự cố / lỗi lặp lại nhưng thiếu dữ liệu nguyên nhân','Có xử lý từng vụ nhưng khó phân tích xu hướng để phòng ngừa.'],
+  ['knowledge','Quy trình phụ thuộc người cũ','Người mới khó nắm việc vì kinh nghiệm nằm trong đầu cá nhân.']
+];
+
+const state = {
+  respondent:'', role:'', department:'', scope:'both',
+  sales_selected:[], sales_situations:['','','','',''], sales_impact_rating:5, sales_biggest_cost:'', sales_expectation:'',
+  ops_selected:[], ops_situations:['','','','',''], ops_impact_rating:5, ops_biggest_cost:'', ops_expectation:'',
+  final_priority:'', note:''
+};
+let step = 0;
+let submittedOnce = false;
+
+function visibleSteps(){
+  const arr = ['intro','profile'];
+  if(state.scope !== 'ops') arr.push('sales-check','sales-situations','sales-impact');
+  if(state.scope !== 'sales') arr.push('ops-check','ops-situations','ops-impact');
+  arr.push('final');
+  return arr;
+}
+function current(){return visibleSteps()[step] || 'final'}
+function go(delta){
+  const total = visibleSteps().length;
+  step = Math.max(0, Math.min(total-1, step + delta));
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+function setStepByName(name){ const idx=visibleSteps().indexOf(name); if(idx>=0){step=idx;render();}}
+function render(){
+  const steps=visibleSteps();
+  const id=current();
+  document.getElementById('readout').textContent = 'BƯỚC '+String(step+1).padStart(2,'0')+' / '+String(steps.length).padStart(2,'0');
+  document.getElementById('progress').style.width = ((step+1)/steps.length*100)+'%';
+  const app=document.getElementById('app');
+  app.innerHTML = '';
+  if(id==='intro') return app.appendChild(intro());
+  if(id==='profile') return app.appendChild(profile());
+  if(id==='sales-check') return app.appendChild(checklist('sales'));
+  if(id==='sales-situations') return app.appendChild(situations('sales'));
+  if(id==='sales-impact') return app.appendChild(impact('sales'));
+  if(id==='ops-check') return app.appendChild(checklist('ops'));
+  if(id==='ops-situations') return app.appendChild(situations('ops'));
+  if(id==='ops-impact') return app.appendChild(impact('ops'));
+  return app.appendChild(finalPage());
+}
+function card(html){ const d=document.createElement('section'); d.className='card'; d.innerHTML=html; return d; }
+function nav(nextText='Tiếp tục', showBack=true){
+  return `<div class="nav">${showBack?`<button class="btn ghost" onclick="go(-1)">← Quay lại</button>`:''}<div class="spacer"></div><button class="btn primary" onclick="go(1)">${nextText} →</button></div>`;
+}
+function intro(){
+  return card(`<div class="eyebrow">Mục tiêu khảo sát</div>
+    <h1>Ghi lại <em>tình huống thật</em> trong chăm sóc khách hàng và phối hợp vận hành</h1>
+    <p class="lead">Khảo sát này không nhằm đánh giá cá nhân. Mục tiêu là thu được 3–5 tình huống bất cập thực tế của đội Kinh doanh và 3–5 tình huống bất cập thực tế của đội Vận hành, để buổi tư vấn đi thẳng vào vấn đề đang xảy ra.</p>
+    <div class="summary"><h3>Cách trả lời tốt nhất</h3><ol>
+      <li>Nêu tình huống đã hoặc đang xảy ra thật.</li>
+      <li>Viết rõ bối cảnh, ai liên quan, đang xử lý bằng cách nào.</li>
+      <li>Nêu hậu quả: chậm, sót, sai, phải hỏi lại, khách phàn nàn, mất thời gian, khó báo cáo...</li>
+    </ol></div>
+    ${nav('Bắt đầu', false)}`);
+}
+function profile(){
+  const d=card(`<div class="eyebrow">Thông tin người trả lời</div>
+    <h2>Để hiểu đúng góc nhìn của anh/chị</h2>
+    <p class="hint">Thông tin này giúp phân loại tình huống theo đúng phòng ban, không dùng để đánh giá cá nhân.</p>
+    <div class="grid">
+      <div class="field"><label>Họ tên / bộ phận</label><input id="respondent" placeholder="VD: Nguyễn Văn A – P. Kinh doanh" value="${esc(state.respondent)}"></div>
+      <div class="field"><label>Vai trò</label><select id="role"><option value="">Chọn vai trò</option><option value="Ban lãnh đạo / điều hành">Ban lãnh đạo / điều hành</option><option value="Trưởng phòng / quản lý bộ phận">Trưởng phòng / quản lý bộ phận</option><option value="Nhân sự kinh doanh">Nhân sự kinh doanh</option><option value="Nhân sự vận hành / điều phối">Nhân sự vận hành / điều phối</option><option value="Khác">Khác</option></select></div>
+    </div>
+    <div class="field"><label>Phòng ban / mảng công việc</label><input id="department" placeholder="VD: Kinh doanh Sasaki / XNK / Sản xuất / QA / Kế toán..." value="${esc(state.department)}"></div>
+    <div class="field"><label>Anh/chị có thể chia sẻ tình huống ở mảng nào?</label>
+      <div class="opts" id="scopeOpts">
+        ${scopeOpt('sales','Chủ yếu là Kinh doanh / chăm sóc khách hàng','Tập trung vào lead, khách hàng, cơ hội, báo giá, hợp đồng, chăm sóc sau bán.')}
+        ${scopeOpt('ops','Chủ yếu là Vận hành / phối hợp nội bộ','Tập trung vào phối hợp liên phòng ban, chứng từ, tiến độ, phê duyệt, xử lý sự cố.')}
+        ${scopeOpt('both','Cả Kinh doanh và Vận hành','Trả lời cả hai nhóm để có bức tranh đầy đủ hơn.')}
+      </div>
+    </div>
+    ${nav()}`);
+  setTimeout(()=>{
+    document.getElementById('role').value = state.role;
+    document.getElementById('respondent').oninput=e=>state.respondent=e.target.value;
+    document.getElementById('role').onchange=e=>state.role=e.target.value;
+    document.getElementById('department').oninput=e=>state.department=e.target.value;
+    document.querySelectorAll('[data-scope]').forEach(btn=>btn.onclick=()=>{state.scope=btn.dataset.scope; step=Math.min(step, visibleSteps().length-1); render();});
+  },0);
+  return d;
+}
+function scopeOpt(v,t,s){return `<button class="opt radio ${state.scope===v?'sel':''}" data-scope="${v}"><span class="box"></span><span><b>${t}</b><span class="txt">${s}</span></span></button>`}
+function checklist(kind){
+  const isSales=kind==='sales'; const list=isSales?SALES_OPTIONS:OPS_OPTIONS; const key=isSales?'sales_selected':'ops_selected';
+  const title=isSales?'Đội Kinh doanh đang gặp những kiểu bất cập nào?':'Đội Vận hành đang gặp những kiểu bất cập nào?';
+  const sub=isSales?'Chọn các tình huống đã hoặc đang xảy ra khi đội kinh doanh làm việc và chăm sóc khách hàng.':'Chọn các tình huống đã hoặc đang xảy ra khi phối hợp hàng ngày với nhiều phòng ban, bộ phận, đơn vị khác nhau.';
+  const d=card(`<div class="eyebrow">${isSales?'Nhóm 1 · Kinh doanh':'Nhóm 2 · Vận hành'}</div><h2>${title}</h2><p class="hint">${sub} Bước sau sẽ yêu cầu anh/chị mô tả tình huống cụ thể.</p><div class="opts">${list.map(([v,t,s])=>`<button class="opt tag ${state[key].includes(v)?'sel':''}" data-kind="${kind}" data-v="${v}"><span class="box"></span><span><b>${t}</b><span class="txt">${s}</span></span></button>`).join('')}</div>${nav()}`);
+  setTimeout(()=>document.querySelectorAll(`[data-kind="${kind}"]`).forEach(btn=>btn.onclick=()=>{toggle(state[key],btn.dataset.v); btn.classList.toggle('sel');}),0);
+  return d;
+}
+function situations(kind){
+  const isSales=kind==='sales'; const key=isSales?'sales_situations':'ops_situations';
+  const filled=state[key].filter(x=>x.trim()).length;
+  const title=isSales?'Hãy mô tả 3–5 tình huống thật của đội Kinh doanh':'Hãy mô tả 3–5 tình huống thật của đội Vận hành';
+  const placeholder=isSales?
+`Gợi ý cấu trúc:\n- Bối cảnh: khách hàng / cơ hội / báo giá / hợp đồng nào?\n- Diễn biến: chuyện gì xảy ra?\n- Ai liên quan: sales, quản lý, kỹ thuật, kế toán, vận hành...?\n- Cách xử lý hiện tại: hỏi Zalo, gọi điện, Excel, họp...?\n- Hậu quả: chậm, sót follow-up, khách phàn nàn, mất cơ hội...?`:
+`Gợi ý cấu trúc:\n- Bối cảnh: đầu việc / chứng từ / quy trình / đơn vị phối hợp nào?\n- Diễn biến: chuyện gì xảy ra?\n- Ai liên quan: phòng ban/bộ phận/đơn vị nào?\n- Cách xử lý hiện tại: Zalo, email, Excel, họp, gọi điện...?\n- Hậu quả: chậm tiến độ, sai thông tin, phải làm lại, khó báo cáo...?`;
+  const d=card(`<div class="eyebrow">Tình huống cụ thể</div><h2>${title}</h2><p class="hint">Nên có ít nhất 3 tình huống. Tình huống số 4–5 là tùy chọn nhưng rất hữu ích nếu có.</p><div id="counter_${kind}" class="counter"><div class="bar"><i style="width:${Math.min(100,filled/3*100)}%"></i></div><b>${filled}/3 tối thiểu</b></div>${filled<3?'<div class="warn">Anh/chị nên nhập thêm để đủ tối thiểu 3 tình huống thực tế.</div>':'<div class="okbox">Đã đủ tối thiểu 3 tình huống. Có thể bổ sung tình huống 4–5 nếu muốn.</div>'}
+    ${[0,1,2,3,4].map(i=>`<div class="situation"><div class="head"><span class="pill ${isSales?'blue':'teal'}">${isSales?'KD':'VH'}-${i+1}</span><b>${i<3?'Tình huống nên có':'Tình huống bổ sung'}</b></div><textarea data-sit="${kind}" data-idx="${i}" placeholder="${placeholder}">${esc(state[key][i])}</textarea></div>`).join('')}
+    ${nav()}`);
+  setTimeout(()=>document.querySelectorAll(`[data-sit="${kind}"]`).forEach(t=>t.oninput=e=>{state[key][Number(t.dataset.idx)]=e.target.value; updateCounter(kind);}),0);
+  return d;
+}
+function updateCounter(kind){
+  const key=kind==='sales'?'sales_situations':'ops_situations';
+  const filled=state[key].filter(x=>x.trim()).length;
+  const box=document.getElementById('counter_'+kind); if(!box) return;
+  box.querySelector('i').style.width=Math.min(100,filled/3*100)+'%';
+  box.querySelector('b').textContent=filled+'/3 tối thiểu';
+}
+function impact(kind){
+  const isSales=kind==='sales';
+  const title=isSales?'Tác động lớn nhất với đội Kinh doanh là gì?':'Tác động lớn nhất với đội Vận hành là gì?';
+  const ratingKey=isSales?'sales_impact_rating':'ops_impact_rating';
+  const costKey=isSales?'sales_biggest_cost':'ops_biggest_cost';
+  const expKey=isSales?'sales_expectation':'ops_expectation';
+  const costOptions=isSales?[
+    'Mất cơ hội bán hàng / giảm tỷ lệ chốt','Khách hàng phải chờ lâu hoặc không hài lòng','Quản lý không nắm được pipeline thật','Sales mất nhiều thời gian nhập liệu và hỏi thông tin','Bàn giao sang bộ phận sau bị lỗi'
+  ]:[
+    'Chậm tiến độ vì phải hỏi và chờ nhiều bên','Thông tin sai / thiếu khiến phải làm lại','Không rõ trách nhiệm nên việc bị trôi','Báo cáo lên trễ hoặc thiếu tin cậy','Sự cố lặp lại nhưng không rút được bài học'
+  ];
+  const d=card(`<div class="eyebrow">Lượng hoá cảm nhận</div><h2>${title}</h2><p class="hint">Phần này giúp xác định mức độ ưu tiên khi tư vấn giải pháp.</p>
+    <div class="field"><label>Mức độ ảnh hưởng hiện tại</label><div class="opts" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5].map(n=>`<button class="opt radio ${state[ratingKey]===n?'sel':''}" data-rate="${kind}" data-v="${n}" style="justify-content:center"><span><b style="text-align:center">${n}</b><span class="txt" style="text-align:center">${n===1?'Nhẹ':n===5?'Rất nặng':''}</span></span></button>`).join('')}</div></div>
+    <div class="field"><label>Hệ quả lớn nhất</label><div class="opts">${costOptions.map(o=>`<button class="opt radio ${state[costKey]===o?'sel':''}" data-cost="${kind}" data-v="${escAttr(o)}"><span class="box"></span><span><b>${o}</b></span></button>`).join('')}</div></div>
+    <div class="field"><label>Nếu được cải thiện, anh/chị kỳ vọng thay đổi rõ nhất là gì?</label><textarea class="textarea-small" id="exp_${kind}" placeholder="VD: biết rõ khách đang ở bước nào; không còn quên follow-up; phê duyệt không bị kẹt; báo cáo lên nhanh hơn...">${esc(state[expKey])}</textarea></div>
+    ${nav()}`);
+  setTimeout(()=>{
+    document.querySelectorAll(`[data-rate="${kind}"]`).forEach(b=>b.onclick=()=>{state[ratingKey]=Number(b.dataset.v); render();});
+    document.querySelectorAll(`[data-cost="${kind}"]`).forEach(b=>b.onclick=()=>{state[costKey]=b.dataset.v; render();});
+    document.getElementById('exp_'+kind).oninput=e=>state[expKey]=e.target.value;
+  },0);
+  return d;
+}
+function finalPage(){
+  const salesCount=state.sales_situations.filter(x=>x.trim()).length;
+  const opsCount=state.ops_situations.filter(x=>x.trim()).length;
+  const needSales=state.scope!=='ops'; const needOps=state.scope!=='sales';
+  const ready = (!needSales || salesCount>=3) && (!needOps || opsCount>=3);
+  const d=card(`<div class="eyebrow">Tổng hợp trước khi gửi</div><h2>Kết quả khảo sát đã sẵn sàng</h2><p class="hint">Kiểm tra nhanh số tình huống đã nhập. Anh/chị vẫn có thể quay lại để bổ sung trước khi gửi.</p>
+    ${needSales?`<div class="summary"><h3>Kinh doanh: ${salesCount}/5 tình huống</h3>${listFilled(state.sales_situations,'Chưa nhập tình huống kinh doanh.')}</div>`:''}
+    ${needOps?`<div class="summary"><h3>Vận hành: ${opsCount}/5 tình huống</h3>${listFilled(state.ops_situations,'Chưa nhập tình huống vận hành.')}</div>`:''}
+    ${ready?'<div class="okbox">Đã đủ dữ liệu tối thiểu để gửi.</div>':'<div class="warn">Chưa đủ 3 tình huống ở ít nhất một nhóm. Vẫn có thể gửi, nhưng nên bổ sung để kết quả tư vấn sát thực tế hơn.</div>'}
+    <div class="field"><label>Ưu tiên lớn nhất anh/chị muốn xử lý trước</label><textarea class="textarea-small" id="final_priority" placeholder="VD: chuẩn hoá chăm sóc khách hàng trước; xử lý phối hợp liên phòng ban trước; gom báo cáo vận hành trước...">${esc(state.final_priority)}</textarea></div>
+    <div class="field"><label>Ghi chú thêm</label><textarea class="textarea-small" id="note" placeholder="Thông tin bổ sung nếu có...">${esc(state.note)}</textarea></div>
+    <div class="export"><button class="btn primary" id="submitBtn">Gửi kết quả</button><button class="btn ghost" onclick="setStepByName('profile')">Sửa kết quả</button></div>
+    <div class="note" id="submitStatus" style="margin-top:12px"></div>
+    ${nav('Hoàn tất', true)}`);
+  setTimeout(()=>{
+    document.getElementById('final_priority').oninput=e=>state.final_priority=e.target.value;
+    document.getElementById('note').oninput=e=>state.note=e.target.value;
+    document.getElementById('submitBtn').onclick=()=>submitToSheet();
+  },0);
+  return d;
+}
+function listFilled(arr,empty){ const f=arr.map(x=>x.trim()).filter(Boolean); if(!f.length) return `<p class="note">${empty}</p>`; return '<ol>'+f.map(x=>'<li>'+esc(shorten(x,180))+'</li>').join('')+'</ol>'; }
+function buildPayload(){
+  const salesSelected=SALES_OPTIONS.filter(([v])=>state.sales_selected.includes(v)).map(([,t])=>t);
+  const opsSelected=OPS_OPTIONS.filter(([v])=>state.ops_selected.includes(v)).map(([,t])=>t);
+  const payload={
+    timestamp:new Date().toISOString(), company:COMPANY, respondent:state.respondent||'(không ghi tên)', role:state.role, department:state.department, scope:state.scope,
+    sales_selected:salesSelected.join(' | '), sales_situation_count:state.sales_situations.filter(x=>x.trim()).length,
+    sales_situation_1:state.sales_situations[0], sales_situation_2:state.sales_situations[1], sales_situation_3:state.sales_situations[2], sales_situation_4:state.sales_situations[3], sales_situation_5:state.sales_situations[4],
+    sales_impact_rating:state.sales_impact_rating, sales_biggest_cost:state.sales_biggest_cost, sales_expectation:state.sales_expectation,
+    ops_selected:opsSelected.join(' | '), ops_situation_count:state.ops_situations.filter(x=>x.trim()).length,
+    ops_situation_1:state.ops_situations[0], ops_situation_2:state.ops_situations[1], ops_situation_3:state.ops_situations[2], ops_situation_4:state.ops_situations[3], ops_situation_5:state.ops_situations[4],
+    ops_impact_rating:state.ops_impact_rating, ops_biggest_cost:state.ops_biggest_cost, ops_expectation:state.ops_expectation,
+    final_priority:state.final_priority, note:state.note
+  };
+  payload.summary=buildSummary(false);
+  payload.raw_json=JSON.stringify(state);
+  return payload;
+}
+function submitToSheet(){
+  state.final_priority=document.getElementById('final_priority')?.value||state.final_priority;
+  state.note=document.getElementById('note')?.value||state.note;
+  const st=document.getElementById('submitStatus');
+  if(!SUBMIT_URL){st.textContent='Chưa cấu hình SUBMIT_URL.';return;}
+  if(submittedOnce){st.textContent='✓ Kết quả đã được gửi trong phiên này.';return;}
+  submittedOnce=true;
+  const payload=buildPayload();
+  st.textContent='• Đang gửi kết quả về Google Sheet...';
+  fetch(SUBMIT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .then(()=>{st.textContent='✓ Đã gửi yêu cầu về Google Sheet. Hãy kiểm tra sheet Responses.'; toast('Đã gửi kết quả');})
+    .catch(err=>{submittedOnce=false; console.error(err); st.textContent='• Chưa gửi được. Hãy kiểm tra quyền deploy Apps Script hoặc dùng nút tải .txt.';});
+}
+function buildSummary(includeHeader=true){
+  let s=''; if(includeHeader) s+='KHẢO SÁT TÌNH HUỐNG THỰC TẾ — HANEL PT\n';
+  s+=`Thời điểm: ${new Date().toLocaleString('vi-VN')}\nNgười trả lời: ${state.respondent||'(không ghi tên)'}\nVai trò: ${state.role||'—'}\nPhòng ban: ${state.department||'—'}\nPhạm vi: ${state.scope}\n`;
+  if(state.scope!=='ops'){
+    s+='\n— NHÓM KINH DOANH / CHĂM SÓC KHÁCH HÀNG —\n';
+    s+='Bất cập đã chọn: '+SALES_OPTIONS.filter(([v])=>state.sales_selected.includes(v)).map(([,t])=>t).join(' | ')+'\n';
+    state.sales_situations.forEach((x,i)=>{if(x.trim())s+=`\nKD-${i+1}. ${x.trim()}\n`;});
+    s+=`\nẢnh hưởng: ${state.sales_impact_rating}/5\nHệ quả lớn nhất: ${state.sales_biggest_cost||'—'}\nKỳ vọng cải thiện: ${state.sales_expectation||'—'}\n`;
+  }
+  if(state.scope!=='sales'){
+    s+='\n— NHÓM VẬN HÀNH / PHỐI HỢP NỘI BỘ —\n';
+    s+='Bất cập đã chọn: '+OPS_OPTIONS.filter(([v])=>state.ops_selected.includes(v)).map(([,t])=>t).join(' | ')+'\n';
+    state.ops_situations.forEach((x,i)=>{if(x.trim())s+=`\nVH-${i+1}. ${x.trim()}\n`;});
+    s+=`\nẢnh hưởng: ${state.ops_impact_rating}/5\nHệ quả lớn nhất: ${state.ops_biggest_cost||'—'}\nKỳ vọng cải thiện: ${state.ops_expectation||'—'}\n`;
+  }
+  s+=`\n— ƯU TIÊN & GHI CHÚ —\nƯu tiên xử lý trước: ${state.final_priority||'—'}\nGhi chú: ${state.note||'—'}\n`;
+  return s;
+}
+function copySummary(){navigator.clipboard?.writeText(buildSummary(true)).then(()=>toast('Đã sao chép bản tóm tắt')).catch(()=>toast('Không sao chép được'));}
+function downloadSummary(){const blob=new Blob([buildSummary(true)],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='khao-sat-tinh-huong-hanel-pt.txt';document.body.appendChild(a);a.click();a.remove();toast('Đã tải file .txt');}
+function toggle(arr,v){const i=arr.indexOf(v); if(i>=0) arr.splice(i,1); else arr.push(v);}
+function esc(str){return String(str||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));}
+function escAttr(str){return esc(str).replace(/'/g,'&#39;');}
+function shorten(s,n){s=String(s||'');return s.length>n?s.slice(0,n-1)+'…':s;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);}
+render();
+</script>
+</body>
+</html>
